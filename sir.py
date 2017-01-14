@@ -1,5 +1,6 @@
 from agent import Agent
 import random
+import numpy as np
 
 def initialisation(w, h,n, num_simul, pr, pm, pi):
 		#tab=[[0]*h]*w
@@ -85,12 +86,70 @@ def move():
 			f.write(str(x) + " " + str(y) + " " + str(etat) + "\n")
 		f.close()
 			
+def infection():
+		#Lecture du fichier
+		f = open('donnees.txt','r')
+		lines = f.readlines()
+		f.close()
 
-	
+		#recuperation de la taille de la grille
+		w = int(lines[1].replace('\n', ''))
+		h = int(lines[2].replace('\n', ''))
+		#recuperation du nombre d'agents
+		N = int(lines[3].replace('\n', ''))
+		#recuperation de pi
+		pi = float(lines[6].replace('\n', ''))
+
+		#creation de la grille
+		grid = np.zeros((w,h))
+		grid = grid.tolist()
+		for i in range(w):
+			for j in range(h):
+				grid[i][j]= []
+
+		#ajout des agents a leur position dans la grille
+		for l in lines[9:]:
+			line = l.split()
+			x = int(line[0])
+			y = int(line[1])
+			etat = int(line[2])
+			agent = Agent(etat,x,y)
+			grid[x][y].append(agent)
+
+		#infection
+		for i in range(w):
+			for j in range(h):
+				if grid[i][j]:
+					infected = False
+					for agent in grid[i][j]:
+						if agent.etat == 1:
+							infected = True
+							break
+					if infected:
+						p = random.random()
+						if p <= pi:
+							for agent in grid[i][j]:
+								if agent.etat == 0:
+									agent.etat = 1
+
+		#Fichier de sortie
+		f = open('donnees.txt','w')
+		#Ecrit les parametres
+		for line in lines[:8]:
+			f.write(line)
+		#Ecrit la nouvelle etape
+		f.write('Infect\n')
+		#Ecrit les nouveaux etats des agents
+		for i in range(w):
+			for j in range(h):
+				if grid[i][j]:
+					for agent in grid[i][j]:
+						f.write(str(agent.x) + " " + str(agent.y) + " " + str(agent.etat) + "\n")
+		f.close()
 
 		
-#initialisation(10,5,5,1,0.5,0.4,0.1)
-move()
-
+initialisation(10,5,5,1,0.5,0.4,0.1)
+#move()
+#infection()
 	
 	
