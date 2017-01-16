@@ -23,6 +23,10 @@ def initialisation(w, h,n, num_simul, pr, pm, pi):
 		f.close()
 		
 		
+
+
+
+
 		
 initialisation(10,5,5,1,0.5,0.4,0.1)
 
