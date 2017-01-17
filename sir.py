@@ -147,9 +147,82 @@ def infection():
 						f.write(str(agent.x) + " " + str(agent.y) + " " + str(agent.etat) + "\n")
 		f.close()
 
+
+#rappel : 0: sain , 1: infecte, 2: resistant, 3 :mort
+def update(): 
+	#Lecture du fichier 
+	f = open('donnees.txt','r') 
+ 	lines = f.readlines() 
+	f.close() 
+ 
+ 
+ 	#recuperation de la taille de la grille 
+ 	w = int(lines[1].replace('\n', '')) 
+ 	h = int(lines[2].replace('\n', '')) 
+ 	#recuperation du nombre d'agents 
+ 	N = int(lines[3].replace('\n', '')) 
+ 	#recuperation de pr 
+ 	pr = float(lines[4].replace('\n', '')) 
+	#recuperation de pm
+ 	pm = float(lines[5].replace('\n', '')) 
+ 
+ 	#creation de la grille 
+ 	grid = np.zeros((w,h)) 
+	grid = grid.tolist() 
+ 	for i in range(w): 
+ 		for j in range(h): 
+ 			grid[i][j]= [] 
+ 
+ 
+	#ajout des agents a leur position dans la grille 
+ 	for l in lines[9:]: 
+ 		line = l.split() 
+ 		x = int(line[0]) 
+ 		y = int(line[1]) 
+ 		etat = int(line[2]) 
+ 		agent = Agent(etat,x,y) 
+ 		grid[x][y].append(agent) 
+ 
+ 
+	#Resistance ou mort
+ 	for i in range(w): 
+ 		for j in range(h): 
+
+			for agent in grid[i][j]: 
+ 				if agent.etat == 1:  
+ 					p = random.random() 
+					print p
+ 					if p <= pr: 
+						agent.etat = 2 
+					else : 
+						if (p>pr and p<=(pm+pr)): 
+							agent.etat=3
+					print agent.etat
+ 
+ 
+ 	#Fichier de sortie 
+	f = open('donnees.txt','w') 
+ 	for line in lines[:8]: 
+ 		f.write(line) 
+ 	#Ecrit la nouvelle etape 
+ 	f.write('Update\n') 
+ 	#Ecrit les nouveaux etats des agents 
+ 	for i in range(w): 
+ 		for j in range(h): 
+ 			if grid[i][j]: 
+				for agent in grid[i][j]: 
+					f.write(str(agent.x) + " " + str(agent.y) + " " + str(agent.etat) + "\n") 
+ 	f.close() 
+
+
+
+
+
+
 		
 initialisation(10,5,5,1,0.5,0.4,0.1)
 #move()
 #infection()
+#update()
 	
 	
