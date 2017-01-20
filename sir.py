@@ -227,7 +227,7 @@ def count(state,n_s,n_i,n_r,n_m):
 		n_m += 1
 	return n_s,n_i,n_r,n_m
 		
-def count_stats():
+def stats():
 	f=open("donnees.txt", "r")
 	f2=open("f_output.txt","w")
 	sim=f.readline()
@@ -282,5 +282,5 @@ initialisation(10,5,5,1,0.5,0.4,0.1)
 #move()
 #infection()
 #update()
-#count_stats()	
+#stats()	
 	
