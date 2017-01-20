@@ -231,7 +231,7 @@ def count_stats():
 	f=open("donnees.txt", "r")
 	f2=open("f_output.txt","w")
 	sim=f.readline()
-	n_simulations= sim[11]
+	#n_simulations= sim[11] #utile pour le graphique
 	for i in range(8):
 		f.readline(9)
 	n_s = 0
