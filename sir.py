@@ -1,6 +1,7 @@
 from agent import Agent
 import random
 import numpy as np
+#import matplotlib.pyplot as plt (pour le graphic final)
 
 def initialisation(w, h,n, num_simul, pr, pm, pi):
   #tab=[[0]*h]*w
@@ -215,6 +216,63 @@ def update():
  	f.close() 
 
 
+def count(state,n_s,n_i,n_r,n_m): 
+	if int(state) == 0: #sain
+		n_s += 1
+	elif int(state) == 1: #infecte
+		n_i += 1
+	elif int(state) == 2: #resistant / retire
+		n_r += 1
+	else: #mort
+		n_m += 1
+	return n_s,n_i,n_r,n_m
+		
+def count_stats():
+	f=open("donnees.txt", "r")
+	f2=open("f_output.txt","w")
+	sim=f.readline()
+	n_simulations= sim[11]
+	for i in range(8):
+		f.readline(9)
+	n_s = 0
+	n_i = 0
+	n_r = 0
+	n_m = 0
+	#~ sains = []
+	#~ infectes = []
+	#~ retires = []
+	#~ morts = []
+	for i in f.readlines():
+		state = i[4]
+		n_s,n_i,n_r,n_m = count(state,n_s,n_i,n_r,n_m)
+	#output file
+	f2.write(sim +'\n')
+	f2.write("sains " + str(n_s) +'\n')
+	f2.write("infectes " + str(n_i) +'\n')
+	f2.write("retires " + str(n_r) +'\n')
+	f2.write("morts " + str(n_m) +'\n')
+	
+	#ca c'est pour faire le graphique
+	#~ sains.append(n_s)  
+	#~ infectes.append(n_i)
+	#~ retires.append(n_r)
+	#~ morts.append(n_m)
+	
+	return n_s, n_i, n_r, n_m
+
+###After all the simulations
+#Plot of the population
+#~ def creates_plot(n_simulations,sains,infectes,retires,morts): 
+	#~ t=np.arange(len(n_simulations))
+	#~ plt.plot(t,sains,c="green")
+	#~ plt.hold(True)
+	#~ plt.plot(t,infectes,c="blue")
+	#~ plt.hold(True)
+	#~ plt.plot(t,retires,c="yellow")
+	#~ plt.hold(True)
+	#~ plt.plot(t,morts,c="red")
+	#~ plt.savefig('statistics',format='png') 
+	#~ plt.show()
 
 
 
@@ -224,5 +282,5 @@ initialisation(10,5,5,1,0.5,0.4,0.1)
 #move()
 #infection()
 #update()
-	
+#count_stats()	
 	
