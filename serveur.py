@@ -30,8 +30,14 @@ class Serveur:
 		while stopBoolServ:
 			newsock, addr = sock.accept()
 			print "connection entrante : %s:%d" % addr
+			f=open("donnees2.txt","r")
+			data=f.read()
+			newsock.send(data)
+			f.close()
 			# on lit ce que la socket a ecrit
 			self.lit(newsock)
+			stopBoolServ=False
+			
 		print "arret de la boucle accept, en attente de connexion ..."
 		sock.shutdown(1)
 		sock.close()
@@ -45,6 +51,10 @@ class Serveur:
 				data = sockClient.recv(self.TAILLE_BLOC)
 				#Remettre les donnees dans un fichier
 				print "recu : ",data
+				fichier=open("serveur.txt","w")
+				fichier.write(data)
+				fichier.close()
+				again=False
 				if data == "end":
 					print "fin de la connexion demandee par le client"
 					again = False
