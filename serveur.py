@@ -3,6 +3,7 @@ import select
 from time import time, ctime
 import sys
 import signal
+from simulation import Simulation
 
 stopBoolServ = True
 
@@ -19,6 +20,8 @@ class Serveur:
 		stopBoolServ = True
 		# Initialisation de la classe """
 		self.TAILLE_BLOC=1024 # la taille des blocs 
+    
+    self.simulations = [] #tableau d'objets simulations
 
 		# creation de la connection pour le serveur, protocol TCP, domaine internet
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
@@ -30,8 +33,14 @@ class Serveur:
 		while stopBoolServ:
 			newsock, addr = sock.accept()
 			print "connection entrante : %s:%d" % addr
+			f=open("donnees2.txt","r")
+			data=f.read()
+			newsock.send(data)
+			f.close()
 			# on lit ce que la socket a ecrit
 			self.lit(newsock)
+			stopBoolServ=False
+			
 		print "arret de la boucle accept, en attente de connexion ..."
 		sock.shutdown(1)
 		sock.close()
@@ -45,6 +54,10 @@ class Serveur:
 				data = sockClient.recv(self.TAILLE_BLOC)
 				#Remettre les donnees dans un fichier
 				print "recu : ",data
+				fichier=open("serveur.txt","w")
+				fichier.write(data)
+				fichier.close()
+				again=False
 				if data == "end":
 					print "fin de la connexion demandee par le client"
 					again = False
