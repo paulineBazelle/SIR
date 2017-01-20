@@ -191,13 +191,11 @@ def update():
 			for agent in grid[i][j]: 
  				if agent.etat == 1:  
  					p = random.random() 
-					print p
  					if p <= pr: 
 						agent.etat = 2 
 					else : 
 						if (p>pr and p<=(pm+pr)): 
 							agent.etat=3
-					print agent.etat
  
  
  	#Fichier de sortie 
@@ -220,9 +218,9 @@ def update():
 
 
 		
-initialisation(10,5,5,1,0.5,0.4,0.1)
+#initialisation(10,5,5,1,0.5,0.4,0.1)
 #move()
 #infection()
-#update()
+update()
 	
 	
