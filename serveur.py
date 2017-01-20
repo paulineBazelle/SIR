@@ -3,6 +3,7 @@ import select
 from time import time, ctime
 import sys
 import signal
+from simulation import Simulation
 
 stopBoolServ = True
 
@@ -19,6 +20,8 @@ class Serveur:
 		stopBoolServ = True
 		# Initialisation de la classe """
 		self.TAILLE_BLOC=1024 # la taille des blocs 
+    
+    self.simulations = [] #tableau d'objets simulations
 
 		# creation de la connection pour le serveur, protocol TCP, domaine internet
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
