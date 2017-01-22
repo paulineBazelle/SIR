@@ -15,57 +15,61 @@ def signal_handler(signal, frame):
 	sys.exit(0)
 
 class Serveur:
-	def __init__(self):
-		global stopBoolServ 
-		stopBoolServ = True
-		# Initialisation de la classe """
-		self.TAILLE_BLOC=2048 # la taille des blocs 
-    
+  def __init__(self):
+    global stopBoolServ
+    stopBoolServ = True
+    # Initialisation de la classe """
+    self.TAILLE_BLOC=2048 # la taille des blocs
     self.simulations = [] #tableau d'objets simulations
-
-		# creation de la connection pour le serveur, protocol TCP, domaine internet
-		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+    # creation de la connection pour le serveur, protocol TCP, domaine internet
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 		# recuperation du numero de port via la ligne de commande
-		sock.bind(('',int(sys.argv[1])))
-		sock.listen(5)
+    sock.bind(('',int(sys.argv[1])))
+    sock.listen(5)
 
 		# en attente qu'un client se connecte
-		while stopBoolServ:
-			newsock, addr = sock.accept()
-			print "connection entrante : %s:%d" % addr
-			# on lit ce que la socket a ecrit
-			self.lit(newsock)
-			
-		print "arret de la boucle accept, en attente de connexion ..."
-		sock.shutdown(1)
-		sock.close()
+    while stopBoolServ:
+      newsock, addr = sock.accept()
+      print "connection entrante : %s:%d" % addr
+      # on lit ce que la socket a ecrit
+      self.lit(newsock)
+      
+    print "arret de la boucle accept, en attente de connexion ..."
+    sock.shutdown(1)
+    sock.close()
 	
 
-	def lit(self,sockClient):
-		# recoit les donnees d'un client et verifie qu il est toujours connecte 
-		print "lecture"
-		again = True
+  def lit(self,sockClient):
+    # recoit les donnees d'un client et verifie qu il est toujours connecte 
+    print "lecture"
+    again = True
     receptionFichier = False
-		while again:
+    sockClient.send('Envoi')
+    while again:
       data = sockClient.recv(self.TAILLE_BLOC)
+      print('recu : %s' %data)
       if receptionFichier:
-        print "recu : ",data
+        print "Telechargement fichier: ",data
         fichier=open("serveur.txt","w")
-				fichier.write(data)
-				fichier.close()
+        fichier.write(data)
+        fichier.close()
       else:
         if data == 'Envoi':
+          print("Reception d'un fichier")
           receptionFichier = True
         if data == 'Pret':
-          f=open("serveur.txt","r")
+          print("Envoi d'un fichier")
+          #f=open("serveur.txt","r")
+          f=open('donnees.txt','r')
           data=f.read()
           sockClient.send(data)
           f.close()
-				if data == "end":
-					print "fin de la connexion demandee par le client"
-					again = False
-		sockClient.shutdown(1)
-		sockClient.close()
+        if data == "end":
+          print "fin de la connexion demandee par le client"
+          again = False
+    print('fin de la communication')
+    sockClient.shutdown(1)
+    sockClient.close()
 
 
 if __name__=="__main__":

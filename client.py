@@ -13,10 +13,9 @@ port = sys.argv[2]
 
 # exemple de function pour traiter les arrets par ctrl+C
 def signal_handler(signal, frame):
-        print 'You pressed Ctrl+C!'
+  print 'You pressed Ctrl+C!'
 	global stopBool
-	
-        sys.exit(0)
+	sys.exit(0)
 #
 
 signal.signal(signal.SIGINT, signal_handler)
@@ -28,6 +27,7 @@ while stopLoop:
 	try:
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.connect((host,int(port)))
+    print('Connected')
     receptionFichier = False
 
     #execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
@@ -51,7 +51,7 @@ while stopLoop:
 
 			
 	except socket.error, e:
-			print "En attente, serveur deja connecte..."
+    print "En attente, serveur deja connecte..."
 			
 	finally:
 		# fermeture de la connexion
