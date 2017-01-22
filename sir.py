@@ -8,13 +8,13 @@ import sys
 import signal
 #import matplotlib.pyplot as plt (pour le graphic final)
 
-def initialisation(w, h,n, num_simul, pr, pm, pi):
+def initialisation(w, h,n, pr, pm, pi):
   #tab=[[0]*h]*w
   #for i in range(w):
   #	for j in range(h):
   #		tab[i][j]= []
   f= open("donnees.txt","w")
-  f.write("Simulation " + str(num_simul) + "\n")
+  f.write("Create\n")
   f.write(str(w)+ "\n")
   f.write(str(h)+ "\n")
   f.write(str(n)+ "\n")
