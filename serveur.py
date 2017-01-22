@@ -47,7 +47,7 @@ class Serveur:
 	
 
 	def lit(self,sockClient):
-		# recoit les donnees d'un client et verifie qu il est toujours connecte 
+		# re coit les donnees d'un client et verifie qu il est toujours connecte 
 		print "lecture"
 		again = True
 		while again:
