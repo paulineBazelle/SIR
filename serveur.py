@@ -12,14 +12,14 @@ def signal_handler(signal, frame):
 	print 'You pressed Ctrl+C!'
 	global stopBoolServ
 	stopBoolServ = False
-	#sys.exit(0)
+	sys.exit(0)
 
 class Serveur:
 	def __init__(self):
 		global stopBoolServ 
 		stopBoolServ = True
 		# Initialisation de la classe """
-		self.TAILLE_BLOC=1024 # la taille des blocs 
+		self.TAILLE_BLOC=2048 # la taille des blocs 
     
     self.simulations = [] #tableau d'objets simulations
 
@@ -33,13 +33,8 @@ class Serveur:
 		while stopBoolServ:
 			newsock, addr = sock.accept()
 			print "connection entrante : %s:%d" % addr
-			f=open("donnees2.txt","r")
-			data=f.read()
-			newsock.send(data)
-			f.close()
 			# on lit ce que la socket a ecrit
 			self.lit(newsock)
-			stopBoolServ=False
 			
 		print "arret de la boucle accept, en attente de connexion ..."
 		sock.shutdown(1)
@@ -50,14 +45,22 @@ class Serveur:
 		# re coit les donnees d'un client et verifie qu il est toujours connecte 
 		print "lecture"
 		again = True
+    receptionFichier = False
 		while again:
-				data = sockClient.recv(self.TAILLE_BLOC)
-				#Remettre les donnees dans un fichier
-				print "recu : ",data
-				fichier=open("serveur.txt","w")
+      data = sockClient.recv(self.TAILLE_BLOC)
+      if receptionFichier:
+        print "recu : ",data
+        fichier=open("serveur.txt","w")
 				fichier.write(data)
 				fichier.close()
-				again=False
+      else:
+        if data == 'Envoi':
+          receptionFichier = True
+        if data == 'Pret':
+          f=open("serveur.txt","r")
+          data=f.read()
+          sockClient.send(data)
+          f.close()
 				if data == "end":
 					print "fin de la connexion demandee par le client"
 					again = False
