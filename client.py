@@ -22,35 +22,37 @@ def signal_handler(signal, frame):
 signal.signal(signal.SIGINT, signal_handler)
 print 'Press Ctrl+C pour arreter le client'
 #creation de la socket puis connexion
-try:
 
-	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.connect((host,int(port)))
+while stopLoop:
+	try:
+		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		s.connect((host,int(port)))
 
-	while stopLoop:
-  		#msg = raw_input('>> ')
-  		f=open("donnees.txt","r")
-		data=f.read()
-  		# envoi puis reception de la reponse
-  		s.send(data)
-		#if msg == "end":
-		#	stopLoop = False
-  		#else: 
-  		f.close()
-		data = s.recv(255) #la taille 
-		fichier=open("client.txt","w")
-		fichier.write(data)
-		fichier.close()
-  		print data # on affiche la reponse
-		stopLoop=False
-except socket.error, e:
-    	print "erreur dans l'appel a une methode de la classe socket: %s" % e
-    	sys.exit(1)
-finally:
-	# fermeture de la connexion
-	print "finally ..."
-	s.shutdown(1)#liberer l ensemble de la memoire associe socket
-	s.close()
-print "fin du client TCP"
+		while stopLoop:
+			#msg = raw_input('>> ')
+			f=open("donnees.txt","r")
+			data=f.read()
+			# envoi puis reception de la reponse
+			s.send(data)
+			#if msg == "end":
+			#	stopLoop = False 
+			f.close()
+			data = s.recv(255) #la taille 
+			fichier=open("client.txt","w")
+			fichier.write(data)
+			fichier.close()
+			print data # on affiche la reponse
+			
+			stopLoop=False
+			
+	except socket.error, e:
+			print "En attente, serveur deja connecte..."
+			
+	finally:
+		# fermeture de la connexion
+		print "finally ..."
+		s.shutdown(1)#liberer l ensemble de la memoire associe socket
+		s.close()
+	print "fin du client TCP"
 
 #site python.org 
