@@ -23,27 +23,32 @@ signal.signal(signal.SIGINT, signal_handler)
 print 'Press Ctrl+C pour arreter le client'
 #creation de la socket puis connexion
 
+#execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
 while stopLoop:
 	try:
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.connect((host,int(port)))
+    receptionFichier = False
 
+    #execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
 		while stopLoop:
-			#msg = raw_input('>> ')
-			f=open("donnees.txt","r")
-			data=f.read()
-			# envoi puis reception de la reponse
-			s.send(data)
-			#if msg == "end":
-			#	stopLoop = False 
-			f.close()
-			data = s.recv(255) #la taille 
-			fichier=open("client.txt","w")
-			fichier.write(data)
-			fichier.close()
-			print data # on affiche la reponse
-			
-			stopLoop=False
+      if receptionFichier:
+        data = s.recv(2048)
+        f=open('donnees.txt','w')
+        f.write(data)
+        f.close()
+      else:
+        msg = raw_input('>> ')
+        if msg == "end":
+          stopLoop = False
+        if msg =='Envoi':
+          receptionFichier = True
+        if msg == 'Pret':
+          f=open("donnees.txt","r")
+          data=f.read()
+          s.send(data)
+          f.close()
+
 			
 	except socket.error, e:
 			print "En attente, serveur deja connecte..."
