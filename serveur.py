@@ -10,7 +10,7 @@ stopBoolServ = True
 #exemple de function pour traiter les arrets par ctrl+C
 def signal_handler(signal, frame):
 	print 'You pressed Ctrl+C!'
-	global stopBoolServ
+	global stopBoolServ 
 	stopBoolServ = False
 	sys.exit(0)
 
@@ -42,25 +42,25 @@ class Serveur:
 	
 
 	def lit(self,sockClient):
-		# re coit les donnees d'un client et verifie qu il est toujours connecte 
+		# recoit les donnees d'un client et verifie qu il est toujours connecte 
 		print "lecture"
 		again = True
-    receptionFichier = False
+		receptionFichier = False
 		while again:
-      data = sockClient.recv(self.TAILLE_BLOC)
-      if receptionFichier:
-        print "recu : ",data
-        fichier=open("serveur.txt","w")
+			data = sockClient.recv(self.TAILLE_BLOC)
+			if receptionFichier:
+				print "recu : ",data
+				fichier=open("serveur.txt","w")
 				fichier.write(data)
 				fichier.close()
-      else:
-        if data == 'Envoi':
-          receptionFichier = True
-        if data == 'Pret':
-          f=open("serveur.txt","r")
-          data=f.read()
-          sockClient.send(data)
-          f.close()
+			else:
+				if data == 'Envoi':
+				  receptionFichier = True
+				if data == 'Pret':
+					f=open("serveur.txt","r")
+					data=f.read()
+					sockClient.send(data)
+					f.close()
 				if data == "end":
 					print "fin de la connexion demandee par le client"
 					again = False
