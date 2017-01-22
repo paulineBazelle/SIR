@@ -10,7 +10,7 @@ stopBoolServ = True
 #exemple de function pour traiter les arrets par ctrl+C
 def signal_handler(signal, frame):
 	print 'You pressed Ctrl+C!'
-	global stopBoolServ
+	global stopBoolServ 
 	stopBoolServ = False
 	sys.exit(0)
 
