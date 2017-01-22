@@ -5,6 +5,8 @@ import sys
 import signal
 
 # correction exercice client socket protocol TCP/IP
+
+
 stopLoop = True
 host = sys.argv[1]
 port = sys.argv[2]
@@ -29,32 +31,34 @@ while stopLoop:
 	
 		#execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
 		while stopLoop:
-		  if receptionFichier:
-			  data = s.recv(2048)
-			  f=open('donnees.txt','w')
-			  f.write(data)
-			  f.close()
-		  else:
-			  msg = raw_input('>> ')
-			  if msg == "end":
-				  stopLoop = False
-			  if msg =='Envoi':
-				  receptionFichier = True
-			  if msg == 'Pret':
-				  f=open("donnees.txt","r")
-				  data=f.read()
-				  s.send(data)
-				  f.close()
-		
+      if receptionFichier:
+        data = s.recv(2048)
+        print ("data :",data)
+        f=open('donnees.txt','w')
+        f.write(data)
+        f.close()
+        #s.send('end')
+      else:
+        msg = s.recv(2048)
+        print ("msg3: ",msg)
+        if msg == "end":
+          stopLoop = False
+        if msg =='Envoi':
+          s.send("Pret")
+          receptionFichier = True
+        if msg == 'Pret':
+          f=open("donnees.txt","r")
+          data=f.read() 
+          s.send(data)
+          f.close()
+  except socket.error, e:
+    print ("En attente, serveur deja connecte...%s"%e)
 			
-	except socket.error, e:
-		print "En attente, serveur deja connecte...%s"%e
-			
-	finally:
-		# fermeture de la connexion
-		print "finally ..."
-		s.shutdown(1)#liberer l ensemble de la memoire associe socket
-		s.close()
-	print "fin du client TCP"
+  finally:
+    # fermeture de la connexion
+    print "finally ..."
+    s.shutdown(1)#liberer l ensemble de la memoire associe socket
+    s.close()
+  print "fin du client TCP"
 
 #site python.org 
