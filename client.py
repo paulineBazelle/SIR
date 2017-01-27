@@ -14,7 +14,8 @@ port = sys.argv[2]
 # exemple de function pour traiter les arrets par ctrl+C
 def signal_handler(signal, frame):
 	print 'You pressed Ctrl+C!'
-	global stopBool
+	global stopLoopG
+  stopLoopG = False
 	sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
@@ -22,25 +23,25 @@ print 'Press Ctrl+C pour arreter le client'
 #creation de la socket puis connexion
 
 #execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
-while stopLoop:
-	try:
-		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		s.connect((host,int(port)))
-		print "connectee"
-		receptionFichier = False
+while stopLoopG:
+  try:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host,int(port)))
+    print "connectee"
+    receptionFichier = False
 	
 		#execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
-		while stopLoop:
-      		if receptionFichier:
-        		data = s.recv(2048)
-        		print ("data :",data)
-        		f=open('donnees.txt','w')
-        		f.write(data)
-        		f.close()
-        		#s.send('end')
-      		else:
-        		msg = s.recv(2048)
-        		print ("msg3: ",msg)
+    while stopLoop:
+      if receptionFichier:
+        data = s.recv(2048)
+        print ("data :",data)
+        f=open('donnees.txt','w')
+        f.write(data)
+        f.close()
+        #s.send('end')
+      else:
+        msg = s.recv(2048)
+        print ("msg3: ",msg)
         if msg == "end":
           stopLoop = False
         if msg =='Envoi':
@@ -57,6 +58,7 @@ while stopLoop:
   finally:
     # fermeture de la connexion
     print "finally ..."
+    s.send('end')
     s.shutdown(1)#liberer l ensemble de la memoire associe socket
     s.close()
   print "fin du client TCP"

@@ -21,6 +21,7 @@ class Serveur:
     # Initialisation de la classe """
     self.TAILLE_BLOC=2048 # la taille des blocs
     self.simulations = [] #tableau d'objets simulations
+    self.nbPas = 100
     # creation de la connection pour le serveur, protocol TCP, domaine internet
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 		# recuperation du numero de port via la ligne de commande
@@ -34,6 +35,7 @@ class Serveur:
       # on lit ce que la socket a ecrit
       self.lit(newsock)
       
+      
     print "arret de la boucle accept, en attente de connexion ..."
     sock.shutdown(1)
     sock.close()
@@ -44,19 +46,46 @@ class Serveur:
     print "lecture"
     again = True
     receptionFichier = False
-    sockClient.send('Envoi')
+    sockClient.send('Action')
     while again:
       data = sockClient.recv(self.TAILLE_BLOC)
       print('recu : %s' %data)
       if receptionFichier:
         print "Telechargement fichier: ",data
+        sockClient.send('end')
         fichier=open("serveur.txt","w")
-        fichier.write(data)
+        data = data.split('\n')
+        if data[0] == 'Create':
+          data[0] = len(self.simulations)
+          simul = Simulation(len(self.simulations))
+          self.simulations.append(simul)
+        else:
+          simul_courante = self.simulations[data[0]]
+          etape = data[8]
+          if etape == 'Move':
+            simul_courante.infect = True
+            simul_courante.move = False
+          if etape == 'Infect':
+            simul_courante.infect = False
+            simul_courante.update = True
+          if etape == 'Update':
+            simul_courante.update = False
+            simul_courante.stats = True
+          if etape == 'Stats':
+            simul_courante.stats = False
+            pas = int(data[7])
+            #if pas == self.nbPas:
+              #fonction stats finale
+            if pas < self.nbPas:
+              simul_courante.finPas()
+              data[7] = str(pas + 1)
+        fichier.writelines(data)
         fichier.close()
       else:
         if data == 'Envoi':
           print("Reception d'un fichier")
           receptionFichier = True
+          sockClient.send('Pret')
         if data == 'Pret':
           print("Envoi d'un fichier")
           #f=open("serveur.txt","r")
@@ -70,6 +99,7 @@ class Serveur:
     print('fin de la communication')
     sockClient.shutdown(1)
     sockClient.close()
+    connected = False
 
 
 if __name__=="__main__":
