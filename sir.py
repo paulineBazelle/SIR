@@ -331,7 +331,6 @@ finally:
 	s.close()
 print "fin du client TCP"
 
-#site python.org 
 
 
 
