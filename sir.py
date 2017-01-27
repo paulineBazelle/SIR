@@ -55,7 +55,7 @@ def move():
   
   f=open("donnees.txt","w")
   #Modifie l'etape 
-  l[8]="Move \n"
+  l[8]="Move\n"
   #Ecrit la simulation, les parametres, le pas et l'etape dans le fichier
   for i in range(9):
     f.write(l[i])
