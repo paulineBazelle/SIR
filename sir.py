@@ -231,37 +231,40 @@ def count(state,n_s,n_i,n_r,n_m):
 	return n_s,n_i,n_r,n_m
 		
 def stats():
-	f=open("donnees.txt", "r")
-	f2=open("f_output.txt","w")
-	sim=f.readline()
+  f=open("donnees.txt", "r")
+  f2=open("f_output.txt","w")
+  lines = f.readlines() 
 	#n_simulations= sim[11] #utile pour le graphique
-	for i in range(8):
-		f.readline(9)
-	n_s = 0
-	n_i = 0
-	n_r = 0
-	n_m = 0
+  for i in range(8):
+    f.readline(9)
+  for line in lines[:8]: 
+    f2.write(line) 
+  f2.write('\n')
+  f2.write('Stats\n') 
+  n_s = 0
+  n_i = 0
+  n_r = 0
+  n_m = 0
 	#~ sains = []
 	#~ infectes = []
 	#~ retires = []
 	#~ morts = []
-	for i in f.readlines():
-		state = i[4]
-		n_s,n_i,n_r,n_m = count(state,n_s,n_i,n_r,n_m)
+  for i in lines[9:]:
+    state = i[4]
+    n_s,n_i,n_r,n_m = count(state,n_s,n_i,n_r,n_m)
 	#output file
-	f2.write(sim +'\n')
-	f2.write("sains " + str(n_s) +'\n')
-	f2.write("infectes " + str(n_i) +'\n')
-	f2.write("retires " + str(n_r) +'\n')
-	f2.write("morts " + str(n_m) +'\n')
-	
+  f2.write("sains " + str(n_s) +'\n')
+  f2.write("infectes " + str(n_i) +'\n')
+  f2.write("retires " + str(n_r) +'\n')
+  f2.write("morts " + str(n_m) +'\n')
+  f.close()
+  f2.close()
 	#ca c'est pour faire le graphique
 	#~ sains.append(n_s)  
 	#~ infectes.append(n_i)
 	#~ retires.append(n_r)
 	#~ morts.append(n_m)
 	
-	return n_s, n_i, n_r, n_m
 
 ###After all the simulations
 #Plot of the population
@@ -287,9 +290,9 @@ def stats():
 #update()
 #stats()	
 	
-######Creation du client 
-# correction exercice client socket protocol TCP/IP
-
+#~ ######Creation du client 
+#~ # correction exercice client socket protocol TCP/IP
+#~ 
 
 stopLoop = True
 host = sys.argv[1]
