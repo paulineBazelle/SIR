@@ -34,6 +34,7 @@ class Serveur:
       # on lit ce que la socket a ecrit
       self.lit(newsock)
       
+      
     print "arret de la boucle accept, en attente de connexion ..."
     sock.shutdown(1)
     sock.close()
@@ -70,6 +71,7 @@ class Serveur:
     print('fin de la communication')
     sockClient.shutdown(1)
     sockClient.close()
+    connected = False
 
 
 if __name__=="__main__":
