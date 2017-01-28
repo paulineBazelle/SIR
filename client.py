@@ -14,6 +14,13 @@ stopLoop = True
 host = sys.argv[1]
 port = sys.argv[2]
 
+occupe = False
+
+if len(sys.argv) == 9:
+  w, h,n, pr, pm, pi = sys.argv[3:]
+  initialisation(w, h,n, pr, pm, pi)
+  occupe = True
+
 # exemple de function pour traiter les arrets par ctrl+C
 def signal_handler(signal, frame):
 	print 'You pressed Ctrl+C!'
@@ -35,7 +42,6 @@ while stopLoopG:
     s.connect((host,int(port)))
     print "connectee"
     receptionFichier = False
-    occupe = False
 	
 		#execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
     while stopLoop:
@@ -47,6 +53,9 @@ while stopLoopG:
         f.close()
         s.send('end')
         occupe = True
+        data = data.split('\n')
+        func = dico_func[data[8]]
+        func()
       else:
         msg = s.recv(2048)
         print ("msg3: ",msg)

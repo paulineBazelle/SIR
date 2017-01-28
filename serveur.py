@@ -81,7 +81,7 @@ class Serveur:
               data[7] = str(pas + 1)
               agents = []
               for line in data[9:13]:
-                agents.append(line.split()[1])
+                agents.append(int(line.split()[1]))
               simul_courante.S = agents[0]
               simul_courante.I = agents[1]
               simul_courante.R = agents[2]
