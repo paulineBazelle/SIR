@@ -282,7 +282,7 @@ if len(sys.argv) == 9:
 def signal_handler(signal, frame):
 	print 'You pressed Ctrl+C!'
 	global stopLoopG
-    stopLoopG = False
+	stopLoopG = False
 	sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
