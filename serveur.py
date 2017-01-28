@@ -74,11 +74,19 @@ class Serveur:
           if etape == 'Stats':
             simul_courante.stats = False
             pas = int(data[7])
-            #if pas == self.nbPas:
-              #fonction stats finale
+            if pas == self.nbPas:
+              simul_courante.statsFinale()
             if pas < self.nbPas:
               simul_courante.finPas()
               data[7] = str(pas + 1)
+              agents = []
+              for line in data[9:13]:
+                agents.append(line.split()[1])
+              simul_courante.S = agents[0]
+              simul_courante.I = agents[1]
+              simul_courante.R = agents[2]
+              simul_courante.M = agents[3]
+              del data[9:13]
         fichier.writelines(data)
         fichier.close()
       else:
@@ -100,7 +108,7 @@ class Serveur:
     sockClient.shutdown(1)
     sockClient.close()
     connected = False
-
+    
 
 if __name__=="__main__":
 	import sys

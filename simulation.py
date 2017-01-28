@@ -1,3 +1,6 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
 class Simulation:
   """L'objet simulation garde une trace de l'etape a laquelle on en est.
   """
@@ -17,6 +20,10 @@ class Simulation:
     self.pas = 0
     self.dico_etape = {'Move ' : self.move, 'Infect': self.infect,
     'Update' : self.update}
+    self.S = []
+    self.I = []
+    self.R = []
+    self.M = []
   
   def finPas(self):
     """Cette methode sera appelee a la fin d'un pas c'est-a-dire
@@ -28,3 +35,16 @@ class Simulation:
   
   def etape(self, chaine):
     return self.dico_etape[chaine]
+  
+  def statsFinale(self):
+    t=np.arange(self.pas)
+    plt.plot(t,self.S,c="green")
+    plt.hold(True)
+    plt.plot(t,self.I,c="blue")
+    plt.hold(True)
+    plt.plot(t,self.R,c="yellow")
+    plt.hold(True)
+    plt.plot(t,self.M,c="red")
+    plt.savefig('statistics',format='png') 
+    plt.show()
+  

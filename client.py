@@ -291,5 +291,46 @@ def update():
  			if grid[i][j]: 
 				for agent in grid[i][j]: 
 					f.write(str(agent.x) + " " + str(agent.y) + " " + str(agent.etat) + "\n") 
- 	f.close() 
-
+ 	f.close()
+  
+def count(state,n_s,n_i,n_r,n_m): 
+	if int(state) == 0: #sain
+		n_s += 1
+	elif int(state) == 1: #infecte
+		n_i += 1
+	elif int(state) == 2: #resistant / retire
+		n_r += 1
+	else: #mort
+		n_m += 1
+	return n_s,n_i,n_r,n_m
+		
+def stats():
+  f=open("donnees.txt", "r")
+  lines = f.readlines()
+	#n_simulations= sim[11] #utile pour le graphique
+  for i in range(8):
+    f.readline(9)
+  f.close()
+  f2=open("donnees.txt","w")
+  for line in lines[:8]: 
+    f2.write(line)
+  f2.write('\n')
+  f2.write('Stats\n') 
+  n_s = 0
+  n_i = 0
+  n_r = 0
+  n_m = 0
+	#~ sains = []
+	#~ infectes = []
+	#~ retires = []
+	#~ morts = []
+  for i in lines[9:]:
+    state = i[4]
+    n_s,n_i,n_r,n_m = count(state,n_s,n_i,n_r,n_m)
+	#output file
+  f2.write("sains " + str(n_s) +' \n')
+  f2.write("infectes " + str(n_i) +' \n')
+  f2.write("retires " + str(n_r) +' \n')
+  f2.write("morts " + str(n_m) +' \n')
+  f2.writelines(lines[9:])
+  f2.close()
