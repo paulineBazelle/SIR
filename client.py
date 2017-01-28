@@ -364,5 +364,3 @@ while stopLoopG:
   print "fin du client TCP"
 
 
-
-
