@@ -9,85 +9,6 @@ import numpy as np
 
 # correction exercice client socket protocol TCP/IP
 
-
-stopLoop = True
-host = sys.argv[1]
-port = sys.argv[2]
-
-occupe = False
-
-if len(sys.argv) == 9:
-  w, h,n, pr, pm, pi = sys.argv[3:]
-  initialisation(w, h,n, pr, pm, pi)
-  occupe = True
-
-# exemple de function pour traiter les arrets par ctrl+C
-def signal_handler(signal, frame):
-	print 'You pressed Ctrl+C!'
-	global stopLoopG
-	stopLoopG = False
-	sys.exit(0)
-
-signal.signal(signal.SIGINT, signal_handler)
-print 'Press Ctrl+C pour arreter le client'
-#creation de la socket puis connexion
-
-dic_func = {'Initialisation': move, 'Move' : infection,
-'Infect' : update, 'Update': stats, 'Stats': move}
-
-#execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
-while stopLoopG:
-  try:
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((host,int(port)))
-    print "connectee"
-    receptionFichier = False
-	
-		#execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
-    while stopLoop:
-      if receptionFichier:
-        data = s.recv(2048)
-        print ("data :",data)
-        f=open('donnees.txt','w')
-        f.write(data)
-        f.close()
-        s.send('end')
-        occupe = True
-        data = data.split('\n')
-        func = dico_func[data[8]]
-        func()
-      else:
-        msg = s.recv(2048)
-        print ("msg3: ",msg)
-        if msg == "end":
-          stopLoop = False
-        if msg =='Envoi':
-          s.send("Pret")
-          receptionFichier = True
-        if msg == 'Pret':
-          f=open("donnees.txt","r")
-          data=f.read() 
-          s.send(data)
-          f.close()
-        if msg == 'Action':
-          if occupe:
-            s.send('Envoi')
-            occupe = False
-          else :
-            s.send('Pret')
-          
-  except socket.error, e:
-    print ("En attente, serveur deja connecte...%s"%e)
-			
-  finally:
-    # fermeture de la connexion
-    print "finally ..."
-    s.send('end')
-    s.shutdown(1)#liberer l ensemble de la memoire associe socket
-    s.close()
-  print "fin du client TCP"
-
-
 """ #############################################
 ################ Methodes SIR ##################
 ####################################################"""
@@ -343,3 +264,87 @@ def stats():
   f2.write("morts " + str(n_m) +' \n')
   f2.writelines(lines[9:])
   f2.close()
+
+"""*************************** Client *****************************"""
+
+
+stopLoop = True
+host = sys.argv[1]
+port = sys.argv[2]
+
+occupe = False
+
+if len(sys.argv) == 9:
+  w, h,n, pr, pm, pi = sys.argv[3:]
+  initialisation(w, h,n, pr, pm, pi)
+  occupe = True
+
+# exemple de function pour traiter les arrets par ctrl+C
+def signal_handler(signal, frame):
+	print 'You pressed Ctrl+C!'
+	global stopLoopG
+	stopLoopG = False
+	sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+print 'Press Ctrl+C pour arreter le client'
+#creation de la socket puis connexion
+
+dic_func = {'Initialisation': move, 'Move' : infection,
+'Infect' : update, 'Update': stats, 'Stats': move}
+
+#execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
+while stopLoopG:
+  try:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host,int(port)))
+    print "connectee"
+    receptionFichier = False
+	
+		#execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
+    while stopLoop:
+      if receptionFichier:
+        data = s.recv(2048)
+        print ("data :",data)
+        f=open('donnees.txt','w')
+        f.write(data)
+        f.close()
+        s.send('end')
+        occupe = True
+        data = data.split('\n')
+        func = dico_func[data[8]]
+        func()
+      else:
+        msg = s.recv(2048)
+        print ("msg3: ",msg)
+        if msg == "end":
+          stopLoop = False
+        if msg =='Envoi':
+          s.send("Pret")
+          receptionFichier = True
+        if msg == 'Pret':
+          f=open("donnees.txt","r")
+          data=f.read() 
+          s.send(data)
+          f.close()
+        if msg == 'Action':
+          if occupe:
+            s.send('Envoi')
+            occupe = False
+          else :
+            s.send('Pret')
+          
+  except socket.error, e:
+    print ("En attente, serveur deja connecte...%s"%e)
+			
+  finally:
+    # fermeture de la connexion
+    print "finally ..."
+    s.send('end')
+    s.shutdown(1)#liberer l ensemble de la memoire associe socket
+    s.close()
+  print "fin du client TCP"
+
+
+
+

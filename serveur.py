@@ -63,20 +63,25 @@ class Serveur:
           simul_courante = self.simulations[data[0]]
           etape = data[8]
           if etape == 'Move':
+            print('end move')
             simul_courante.infect = True
             simul_courante.move = False
           if etape == 'Infect':
+            print('end infect')
             simul_courante.infect = False
             simul_courante.update = True
           if etape == 'Update':
+            print('end update')
             simul_courante.update = False
             simul_courante.stats = True
           if etape == 'Stats':
+            print('end stats')
             simul_courante.stats = False
             pas = int(data[7])
             if pas == self.nbPas:
               simul_courante.statsFinale()
             if pas < self.nbPas:
+              print('end pas %i' %pas)
               simul_courante.finPas()
               data[7] = str(pas + 1)
               agents = []
@@ -96,8 +101,7 @@ class Serveur:
           sockClient.send('Pret')
         if data == 'Pret':
           print("Envoi d'un fichier")
-          #f=open("serveur.txt","r")
-          f=open('donnees.txt','r')
+          f=open("serveur.txt","r")
           data=f.read()
           sockClient.send(data)
           f.close()
