@@ -6,6 +6,7 @@ import signal
 from agent import Agent
 import random
 import numpy as np
+import errno
 
 # correction exercice client socket protocol TCP/IP
 
@@ -69,9 +70,10 @@ def move():
   for i in range(9,len(l)):
     #Recupere coordonnees x et y et l'etat
     split=l[i].split(" ")
-    x=int(split[0])
-    y=int(split[1])
-    etat=int(split[2])
+    if len(split) !=1:
+		x=int(split[0].rstrip('\n'))
+		y=int(split[1].rstrip('\n'))
+		etat=int(split[2].rstrip('\n'))
     #Effectue le deplacement de chaque agent
     #Tire un deplacement aleatoire
     d=random.choice(["n","s","e","o"])
@@ -268,21 +270,25 @@ def stats():
 """*************************** Client *****************************"""
 
 
-stopLoop = True
+
 host = sys.argv[1]
 port = sys.argv[2]
 
+
+global stopLoopG
+stopLoopG = True
 occupe = False
 
 if len(sys.argv) == 9:
+#if len(sys.argv) == 8:
   w, h,n, pr, pm, pi = sys.argv[3:]
-  initialisation(w, h,n, pr, pm, pi)
+  initialisation(int(w), int(h), int(n), float(pr), float(pm), float(pi))
   occupe = True
 
 # exemple de function pour traiter les arrets par ctrl+C
 def signal_handler(signal, frame):
 	print 'You pressed Ctrl+C!'
-	global stopLoopG
+	#global stopLoopG
 	stopLoopG = False
 	sys.exit(0)
 
@@ -295,9 +301,11 @@ dic_func = {'Initialisation': move, 'Move' : infection,
 
 #execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
 while stopLoopG:
+  stopLoop = True
   try:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((host,int(port)))
+    #s.connect(('',int(port)))
     print "connectee"
     receptionFichier = False
 	
@@ -312,7 +320,8 @@ while stopLoopG:
         s.send('end')
         occupe = True
         data = data.split('\n')
-        func = dico_func[data[8]]
+        print (len(data))
+        func = dic_func[data[8]]
         func()
       else:
         msg = s.recv(2048)
@@ -333,9 +342,18 @@ while stopLoopG:
             occupe = False
           else :
             s.send('Pret')
+            receptionFichier = True
           
-  except socket.error, e:
-    print ("En attente, serveur deja connecte...%s"%e)
+  #except socket.error, e:
+  except IOError, e:
+	if e.errno == errno.EPIPE: 
+		print ("epipe")
+		s.close()
+	elif e.errno == errno.ECONNRESET:
+		print ("possible perte de donnees")
+	else :
+		print ("En attente, serveur deja connecte...%s"%e)
+		raise
 			
   finally:
     # fermeture de la connexion
