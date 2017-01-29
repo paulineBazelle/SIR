@@ -48,12 +48,12 @@ def move():
   f.close()
   
   #Recupere la taille de la grille
-  t=len(l[1])-2
+  t=len(l[1])-1
   if t!=0:
     w=int(l[1][0:t])	#Enleve le caractere de retour a la ligne et transforme en entier
   else:
     w=int(l[1][0])
-  t=len(l[2])-2
+  t=len(l[2])-1
   if t!=0:
     h=int(l[2][0:t])
   else:
@@ -71,9 +71,9 @@ def move():
     #Recupere coordonnees x et y et l'etat
     split=l[i].split(" ")
     if len(split) !=1:
-			x=int(split[0].rstrip('\n'))
-			y=int(split[1].rstrip('\n'))
-			etat=int(split[2].rstrip('\n'))
+		x=int(split[0].rstrip('\n'))
+		y=int(split[1].rstrip('\n'))
+		etat=int(split[2].rstrip('\n'))
     #Effectue le deplacement de chaque agent
     #Tire un deplacement aleatoire
     d=random.choice(["n","s","e","o"])
@@ -123,11 +123,12 @@ def infection():
   #ajout des agents a leur position dans la grille
   for l in lines[9:]:
     line = l.split()
-    x = int(line[0])
-    y = int(line[1])
-    etat = int(line[2])
-    agent = Agent(etat,x,y)
-    grid[x][y].append(agent)
+    if len(line)> 1:
+		x = int(line[0].rstrip('\n'))
+		y = int(line[1].rstrip('\n'))
+		etat = int(line[2].rstrip('\n'))
+		agent = Agent(etat,x,y)
+		grid[x][y].append(agent)
 
   #infection
   for i in range(w):
@@ -189,12 +190,13 @@ def update():
  
 	#ajout des agents a leur position dans la grille 
  	for l in lines[9:]: 
- 		line = l.split() 
- 		x = int(line[0]) 
- 		y = int(line[1]) 
- 		etat = int(line[2]) 
- 		agent = Agent(etat,x,y) 
- 		grid[x][y].append(agent) 
+ 		line = l.split()
+ 		if len(line) >1: 
+			x = int(line[0].rstrip('\n')) 
+			y = int(line[1].rstrip('\n')) 
+			etat = int(line[2].rstrip('\n')) 
+			agent = Agent(etat,x,y) 
+			grid[x][y].append(agent) 
  
  
 	#Resistance ou mort
@@ -246,7 +248,7 @@ def stats():
   f2=open("donnees.txt","w")
   for line in lines[:8]: 
     f2.write(line)
-  f2.write('\n')
+  #f2.write('\n')
   f2.write('Stats\n') 
   n_s = 0
   n_i = 0
@@ -257,8 +259,10 @@ def stats():
 	#~ retires = []
 	#~ morts = []
   for i in lines[9:]:
-    state = i[4]
-    n_s,n_i,n_r,n_m = count(state,n_s,n_i,n_r,n_m)
+	  if (len(i)>2):
+		  a=i.split()
+		  state = a[2]
+		  n_s,n_i,n_r,n_m = count(state,n_s,n_i,n_r,n_m)
 	#output file
   f2.write("sains " + str(n_s) +' \n')
   f2.write("infectes " + str(n_i) +' \n')
@@ -323,6 +327,7 @@ while stopLoopG:
         print (len(data))
         func = dic_func[data[8]]
         func()
+        receptionFichier = False 
       else:
         msg = s.recv(2048)
         print ("msg3: ",msg)
