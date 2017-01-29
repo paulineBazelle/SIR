@@ -86,18 +86,18 @@ class Serveur:
               pas = int(data[7])
               if pas == self.nbPas:
                 simul_courante.statsFinale()
-                if pas < self.nbPas:
-                      print('end pas %i' %pas)
-                      simul_courante.finPas()
-                      data[7] = str(pas + 1)
-                      agents = []
-                      for line in data[9:13]:
-                        agents.append(int(line.split()[1]))
-                      simul_courante.S.append(agents[0])
-                      simul_courante.I.append(agents[1])
-                      simul_courante.R.append(agents[2])
-                      simul_courante.M.append(agents[3])
-                      del data[9:13]
+              if pas < self.nbPas:
+                print('end pas %i' %pas)
+                simul_courante.finPas()
+                data[7] = str(pas + 1)
+                agents = []
+                for line in data[9:13]:
+                  agents.append(int(line.split()[1]))
+                simul_courante.S.append(agents[0])
+                simul_courante.I.append(agents[1])
+                simul_courante.R.append(agents[2])
+                simul_courante.M.append(agents[3])
+                del data[9:13]
           for line in data:
             fichier.write(line + '\n')
           #fichier.writelines(data)
