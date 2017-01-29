@@ -17,8 +17,8 @@ import errno
 def initialisation(w, h,n, pr, pm, pi):
   #tab=[[0]*h]*w
   #for i in range(w):
-  #	for j in range(h):
-  #		tab[i][j]= []
+  # for j in range(h):
+  #   tab[i][j]= []
   f= open("donnees.txt","w")
   f.write("Create\n")
   f.write(str(w)+ "\n")
@@ -50,7 +50,7 @@ def move():
   #Recupere la taille de la grille
   t=len(l[1])-1
   if t!=0:
-    w=int(l[1][0:t])	#Enleve le caractere de retour a la ligne et transforme en entier
+    w=int(l[1][0:t])  #Enleve le caractere de retour a la ligne et transforme en entier
   else:
     w=int(l[1][0])
   t=len(l[2])-1
@@ -98,7 +98,7 @@ def move():
       #Ecrit les nouvelles coordonnees des agents dans le fichier
       f.write(str(x) + " " + str(y) + " " + str(etat) + "\n")
   f.close()
-			
+      
 def infection():
   #Lecture du fichier
   f = open('donnees.txt','r')
@@ -191,7 +191,7 @@ def update():
 #ajout des agents a leur position dans la grille 
   for l in lines[9:]: 
     line = l.split()
-      if len(line) >1: 
+    if len(line) >1: 
         x = int(line[0].rstrip('\n')) 
         y = int(line[1].rstrip('\n')) 
         etat = int(line[2].rstrip('\n')) 
@@ -202,11 +202,10 @@ def update():
 #Resistance ou mort
   for i in range(w): 
     for j in range(h): 
-
       for agent in grid[i][j]: 
         if agent.etat == 1:  
           p = random.random()
- 	  if p <= pr: 
+          if p <= pr: 
             agent.etat = 2 
           else : 
             if (p>pr and p<=(pm+pr)): 
@@ -218,13 +217,13 @@ def update():
   for line in lines[:8]: 
     f.write(line) 
     #Ecrit la nouvelle etape 
-    f.write('Update\n') 
-    #Ecrit les nouveaux etats des agents 
-    for i in range(w): 
-      for j in range(h): 
-        if grid[i][j]: 
-          for agent in grid[i][j]: 
-            f.write(str(agent.x) + " " + str(agent.y) + " " + str(agent.etat) + "\n") 
+  f.write('Update\n') 
+  #Ecrit les nouveaux etats des agents 
+  for i in range(w): 
+    for j in range(h): 
+      if grid[i][j]: 
+        for agent in grid[i][j]: 
+          f.write(str(agent.x) + " " + str(agent.y) + " " + str(agent.etat) + "\n") 
   f.close()
   
 def count(state,n_s,n_i,n_r,n_m): 
@@ -237,11 +236,11 @@ def count(state,n_s,n_i,n_r,n_m):
   else: #mort
     n_m += 1
   return n_s,n_i,n_r,n_m
-		
+    
 def stats():
   f=open("donnees.txt", "r")
   lines = f.readlines()
-	#n_simulations= sim[11] #utile pour le graphique
+  #n_simulations= sim[11] #utile pour le graphique
   for i in range(8):
     f.readline(9)
   f.close()
@@ -254,10 +253,10 @@ def stats():
   n_i = 0
   n_r = 0
   n_m = 0
-	#~ sains = []
-	#~ infectes = []
-	#~ retires = []
-	#~ morts = []
+  #~ sains = []
+  #~ infectes = []
+  #~ retires = []
+  #~ morts = []
   for i in lines[9:]:
     if (len(i)>2):
       a=i.split()
@@ -312,26 +311,26 @@ while stopLoopG:
     #s.connect(('',int(port)))
     print "connectee"
     receptionFichier = False
-	
-		#execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
+  
+    #execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
     while stopLoop:
       if receptionFichier:
         data = s.recv(2048)
         print ("data :",data)
         if (data== "end"):
-	      stopLoop = False
-	      receptionFichier = False
-	    else : 
-	      f=open('donnees.txt','w')
-	      f.write(data)
-	      f.close()
-	      s.send('end')
-	      occupe = True
-	      data = data.split('\n')
-	      print (len(data))
-	      func = dic_func[data[8]]
-	      func()
-	      receptionFichier = False 
+          stopLoop = False
+          receptionFichier = False
+        else : 
+          f=open('donnees.txt','w')
+          f.write(data)
+          f.close()
+          s.send('end')
+          occupe = True
+          data = data.split('\n')
+          print (len(data))
+          func = dic_func[data[8]]
+          func()
+          receptionFichier = False 
       else:
         msg = s.recv(2048)
         print ("msg3: ",msg)
@@ -363,7 +362,7 @@ while stopLoopG:
     else :
       print ("En attente, serveur deja connecte...%s"%e)
       raise
-			
+      
   finally:
     # fermeture de la connexion
     print "finally ..."
