@@ -54,6 +54,7 @@ class Serveur:
         print('recu : %s' %data)
         if receptionFichier:
           print "Telechargement fichier: ",data
+          print "Longueur", len(data)
           sockClient.send('end')
           fichier=open("serveur.txt","w")
           data = data.split('\n')
@@ -89,10 +90,10 @@ class Serveur:
                 agents = []
                 for line in data[9:13]:
                   agents.append(int(line.split()[1]))
-                simul_courante.S = agents[0]
-                simul_courante.I = agents[1]
-                simul_courante.R = agents[2]
-                simul_courante.M = agents[3]
+                simul_courante.S.append(agents[0])
+                simul_courante.I.append(agents[1])
+                simul_courante.R.append(agents[2])
+                simul_courante.M.append(agents[3])
                 del data[9:13]
           for line in data:
             fichier.write(line + '\n')
@@ -108,8 +109,10 @@ class Serveur:
             print("Envoi d'un fichier")
             f=open("serveur.txt","r")
             data=f.read()
+            print("data :",data)
             sockClient.send(data)
             f.close()
+            sockClient.send('end')
           if data == "end":
             print "fin de la connexion demandee par le client"
             again = False
