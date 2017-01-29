@@ -271,7 +271,8 @@ def stats():
 stopLoop = True
 host = sys.argv[1]
 port = sys.argv[2]
-
+global stopLoopG
+stopLoopG=True
 occupe = False
 
 if len(sys.argv) == 9:
@@ -282,7 +283,6 @@ if len(sys.argv) == 9:
 # exemple de function pour traiter les arrets par ctrl+C
 def signal_handler(signal, frame):
 	print 'You pressed Ctrl+C!'
-	global stopLoopG
 	stopLoopG = False
 	sys.exit(0)
 
