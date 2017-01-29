@@ -69,35 +69,35 @@ class Serveur:
             simul_courante = self.simulations[int(data[0])]
             etape = data[8]
             if etape == 'Move':
-	      print('end move')
-	      simul_courante.infect = True
-	      simul_courante.move = False
+              print('end move')
+              simul_courante.infect = True
+              simul_courante.move = False
             if etape == 'Infect':
-	      print('end infect')
-	      simul_courante.infect = False
-	      simul_courante.update = True
+              print('end infect')
+              simul_courante.infect = False
+              simul_courante.update = True
             if etape == 'Update':
-	      print('end update')
-	      simul_courante.update = False
-	      simul_courante.stats = True
+              print('end update')
+              simul_courante.update = False
+              simul_courante.stats = True
             if etape == 'Stats':
-	      print('end stats')
-	      simul_courante.stats = False
-	      pas = int(data[7])
-          if pas == self.nbPas:
-            simul_courante.statsFinale()
-            if pas < self.nbPas:
-              print('end pas %i' %pas)
-              simul_courante.finPas()
-              data[7] = str(pas + 1)
-              agents = []
-              for line in data[9:13]:
-                agents.append(int(line.split()[1]))
-              simul_courante.S.append(agents[0])
-              simul_courante.I.append(agents[1])
-              simul_courante.R.append(agents[2])
-              simul_courante.M.append(agents[3])
-              del data[9:13]
+              print('end stats')
+              simul_courante.stats = False
+              pas = int(data[7])
+              if pas == self.nbPas:
+                simul_courante.statsFinale()
+              if pas < self.nbPas:
+                print('end pas %i' %pas)
+                simul_courante.finPas()
+                data[7] = str(pas + 1)
+                agents = []
+                for line in data[9:13]:
+                  agents.append(int(line.split()[1]))
+                simul_courante.S.append(agents[0])
+                simul_courante.I.append(agents[1])
+                simul_courante.R.append(agents[2])
+                simul_courante.M.append(agents[3])
+                del data[9:13]
           for line in data:
             fichier.write(line + '\n')
           #fichier.writelines(data)
@@ -140,5 +140,4 @@ if __name__=="__main__":
     print "usage : %s <port>" % (sys.argv[0],)
     sys.exit(-1)
   signal.signal(signal.SIGINT, signal_handler)
-  Serveur()
-
+Serveur()
