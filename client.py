@@ -71,32 +71,32 @@ def move():
     #Recupere coordonnees x et y et l'etat
     split=l[i].split(" ")
     if len(split) !=1:
-		x=int(split[0].rstrip('\n'))
-		y=int(split[1].rstrip('\n'))
-		etat=int(split[2].rstrip('\n'))
-    #Effectue le deplacement de chaque agent
-    #Tire un deplacement aleatoire
-    d=random.choice(["n","s","e","o"])
-    #se deplace selon de deplacement aleatoire tire
-    if(d=="n"):
-      y=y+1
-      #Verifie que y ne sors pas de l'environnement
-      if y==h:
-        y=0
-    if(d=="s"):
-      y=y-1
-      if y==-1:
-        y=h-1
-    if(d=="e"):
-      x=x+1
-      if x==w:
-        x=0
-    if(d=="o"):
-      x=x-1
-      if x==-1:
-        x=w-1
-    #Ecrit les nouvelles coordonnees des agents dans le fichier
-    f.write(str(x) + " " + str(y) + " " + str(etat) + "\n")
+      x=int(split[0].rstrip('\n'))
+      y=int(split[1].rstrip('\n'))
+      etat=int(split[2].rstrip('\n'))
+      #Effectue le deplacement de chaque agent
+      #Tire un deplacement aleatoire
+      d=random.choice(["n","s","e","o"])
+      #se deplace selon de deplacement aleatoire tire
+      if(d=="n"):
+        y=y+1
+	  #Verifie que y ne sors pas de l'environnement
+	  if y==h:
+	    y=0
+      if(d=="s"):
+        y=y-1
+	  if y==-1:
+            y=h-1
+      if(d=="e"):
+        x=x+1
+	  if x==w:
+            x=0
+      if(d=="o"):
+        x=x-1
+	  if x==-1:
+            x=w-1
+	#Ecrit les nouvelles coordonnees des agents dans le fichier
+      f.write(str(x) + " " + str(y) + " " + str(etat) + "\n")
   f.close()
 			
 def infection():
@@ -124,11 +124,11 @@ def infection():
   for l in lines[9:]:
     line = l.split()
     if len(line)> 1:
-		x = int(line[0].rstrip('\n'))
-		y = int(line[1].rstrip('\n'))
-		etat = int(line[2].rstrip('\n'))
-		agent = Agent(etat,x,y)
-		grid[x][y].append(agent)
+      x = int(line[0].rstrip('\n'))
+      y = int(line[1].rstrip('\n'))
+      etat = int(line[2].rstrip('\n'))
+      agent = Agent(etat,x,y)
+      grid[x][y].append(agent)
 
   #infection
   for i in range(w):
@@ -164,79 +164,79 @@ def infection():
 
 #rappel : 0: sain , 1: infecte, 2: resistant, 3 :mort
 def update(): 
-	#Lecture du fichier 
-	f = open('donnees.txt','r') 
- 	lines = f.readlines() 
-	f.close() 
+  #Lecture du fichier 
+  f = open('donnees.txt','r') 
+  lines = f.readlines() 
+  f.close() 
  
  
- 	#recuperation de la taille de la grille 
- 	w = int(lines[1].replace('\n', '')) 
- 	h = int(lines[2].replace('\n', '')) 
- 	#recuperation du nombre d'agents 
- 	N = int(lines[3].replace('\n', '')) 
- 	#recuperation de pr 
- 	pr = float(lines[4].replace('\n', '')) 
-	#recuperation de pm
- 	pm = float(lines[5].replace('\n', '')) 
+  #recuperation de la taille de la grille 
+  w = int(lines[1].replace('\n', '')) 
+  h = int(lines[2].replace('\n', '')) 
+  #recuperation du nombre d'agents 
+  N = int(lines[3].replace('\n', '')) 
+  #recuperation de pr 
+  pr = float(lines[4].replace('\n', '')) 
+  #recuperation de pm
+  pm = float(lines[5].replace('\n', '')) 
  
- 	#creation de la grille 
- 	grid = np.zeros((w,h)) 
-	grid = grid.tolist() 
- 	for i in range(w): 
- 		for j in range(h): 
- 			grid[i][j]= [] 
- 
- 
-	#ajout des agents a leur position dans la grille 
- 	for l in lines[9:]: 
- 		line = l.split()
- 		if len(line) >1: 
-			x = int(line[0].rstrip('\n')) 
-			y = int(line[1].rstrip('\n')) 
-			etat = int(line[2].rstrip('\n')) 
-			agent = Agent(etat,x,y) 
-			grid[x][y].append(agent) 
+#creation de la grille 
+  grid = np.zeros((w,h)) 
+  grid = grid.tolist() 
+  for i in range(w): 
+    for j in range(h): 
+      grid[i][j]= [] 
  
  
-	#Resistance ou mort
- 	for i in range(w): 
- 		for j in range(h): 
+#ajout des agents a leur position dans la grille 
+  for l in lines[9:]: 
+    line = l.split()
+      if len(line) >1: 
+        x = int(line[0].rstrip('\n')) 
+        y = int(line[1].rstrip('\n')) 
+        etat = int(line[2].rstrip('\n')) 
+        agent = Agent(etat,x,y) 
+        grid[x][y].append(agent) 
+ 
+ 
+#Resistance ou mort
+  for i in range(w): 
+    for j in range(h): 
 
-			for agent in grid[i][j]: 
- 				if agent.etat == 1:  
- 					p = random.random()
- 					if p <= pr: 
-						agent.etat = 2 
-					else : 
-						if (p>pr and p<=(pm+pr)): 
-							agent.etat=3
+      for agent in grid[i][j]: 
+        if agent.etat == 1:  
+          p = random.random()
+ 	  if p <= pr: 
+            agent.etat = 2 
+          else : 
+            if (p>pr and p<=(pm+pr)): 
+              agent.etat=3
  
  
- 	#Fichier de sortie 
-	f = open('donnees.txt','w') 
- 	for line in lines[:8]: 
- 		f.write(line) 
- 	#Ecrit la nouvelle etape 
- 	f.write('Update\n') 
- 	#Ecrit les nouveaux etats des agents 
- 	for i in range(w): 
- 		for j in range(h): 
- 			if grid[i][j]: 
-				for agent in grid[i][j]: 
-					f.write(str(agent.x) + " " + str(agent.y) + " " + str(agent.etat) + "\n") 
- 	f.close()
+#Fichier de sortie 
+  f = open('donnees.txt','w') 
+  for line in lines[:8]: 
+    f.write(line) 
+    #Ecrit la nouvelle etape 
+    f.write('Update\n') 
+    #Ecrit les nouveaux etats des agents 
+    for i in range(w): 
+      for j in range(h): 
+        if grid[i][j]: 
+          for agent in grid[i][j]: 
+            f.write(str(agent.x) + " " + str(agent.y) + " " + str(agent.etat) + "\n") 
+  f.close()
   
 def count(state,n_s,n_i,n_r,n_m): 
-	if int(state) == 0: #sain
-		n_s += 1
-	elif int(state) == 1: #infecte
-		n_i += 1
-	elif int(state) == 2: #resistant / retire
-		n_r += 1
-	else: #mort
-		n_m += 1
-	return n_s,n_i,n_r,n_m
+  if int(state) == 0: #sain
+    n_s += 1
+  elif int(state) == 1: #infecte
+    n_i += 1
+  elif int(state) == 2: #resistant / retire
+    n_r += 1
+  else: #mort
+    n_m += 1
+  return n_s,n_i,n_r,n_m
 		
 def stats():
   f=open("donnees.txt", "r")
@@ -259,11 +259,11 @@ def stats():
 	#~ retires = []
 	#~ morts = []
   for i in lines[9:]:
-	  if (len(i)>2):
-		  a=i.split()
-		  state = a[2]
-		  n_s,n_i,n_r,n_m = count(state,n_s,n_i,n_r,n_m)
-	#output file
+    if (len(i)>2):
+      a=i.split()
+      state = a[2]
+      n_s,n_i,n_r,n_m = count(state,n_s,n_i,n_r,n_m)
+#output file
   f2.write("sains " + str(n_s) +' \n')
   f2.write("infectes " + str(n_i) +' \n')
   f2.write("retires " + str(n_r) +' \n')
@@ -291,10 +291,10 @@ if len(sys.argv) == 9:
 
 # exemple de function pour traiter les arrets par ctrl+C
 def signal_handler(signal, frame):
-	print 'You pressed Ctrl+C!'
-	#global stopLoopG
-	stopLoopG = False
-	sys.exit(0)
+  print 'You pressed Ctrl+C!'
+  #global stopLoopG
+  stopLoopG = False
+  sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
 print 'Press Ctrl+C pour arreter le client'
@@ -314,20 +314,24 @@ while stopLoopG:
     receptionFichier = False
 	
 		#execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
-    while stopLoop:
+     while stopLoop:
       if receptionFichier:
         data = s.recv(2048)
         print ("data :",data)
-        f=open('donnees.txt','w')
-        f.write(data)
-        f.close()
-        s.send('end')
-        occupe = True
-        data = data.split('\n')
-        print (len(data))
-        func = dic_func[data[8]]
-        func()
-        receptionFichier = False 
+        if (data== "end"):
+	  stopLoop = False
+	  receptionFichier = False
+	else : 
+	  f=open('donnees.txt','w')
+	  f.write(data)
+	  f.close()
+	  s.send('end')
+	  occupe = True
+	  data = data.split('\n')
+	  print (len(data))
+	  func = dic_func[data[8]]
+	  func()
+	  receptionFichier = False 
       else:
         msg = s.recv(2048)
         print ("msg3: ",msg)
@@ -351,14 +355,14 @@ while stopLoopG:
           
   #except socket.error, e:
   except IOError, e:
-	if e.errno == errno.EPIPE: 
-		print ("epipe")
-		s.close()
-	elif e.errno == errno.ECONNRESET:
-		print ("possible perte de donnees")
-	else :
-		print ("En attente, serveur deja connecte...%s"%e)
-		raise
+    if e.errno == errno.EPIPE: 
+      print ("epipe")
+      s.close()
+    elif e.errno == errno.ECONNRESET:
+      print ("possible perte de donnees")
+    else :
+      print ("En attente, serveur deja connecte...%s"%e)
+      raise
 			
   finally:
     # fermeture de la connexion
