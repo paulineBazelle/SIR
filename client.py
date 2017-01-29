@@ -71,9 +71,9 @@ def move():
     #Recupere coordonnees x et y et l'etat
     split=l[i].split(" ")
     if len(split) !=1:
-		x=int(split[0].rstrip('\n'))
-		y=int(split[1].rstrip('\n'))
-		etat=int(split[2].rstrip('\n'))
+			x=int(split[0].rstrip('\n'))
+			y=int(split[1].rstrip('\n'))
+			etat=int(split[2].rstrip('\n'))
     #Effectue le deplacement de chaque agent
     #Tire un deplacement aleatoire
     d=random.choice(["n","s","e","o"])
