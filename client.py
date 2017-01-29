@@ -71,32 +71,32 @@ def move():
     #Recupere coordonnees x et y et l'etat
     split=l[i].split(" ")
     if len(split) !=1:
-		x=int(split[0].rstrip('\n'))
-		y=int(split[1].rstrip('\n'))
-		etat=int(split[2].rstrip('\n'))
-    #Effectue le deplacement de chaque agent
-    #Tire un deplacement aleatoire
-    d=random.choice(["n","s","e","o"])
-    #se deplace selon de deplacement aleatoire tire
-    if(d=="n"):
-      y=y+1
-      #Verifie que y ne sors pas de l'environnement
-      if y==h:
-        y=0
-    if(d=="s"):
-      y=y-1
-      if y==-1:
-        y=h-1
-    if(d=="e"):
-      x=x+1
-      if x==w:
-        x=0
-    if(d=="o"):
-      x=x-1
-      if x==-1:
-        x=w-1
-    #Ecrit les nouvelles coordonnees des agents dans le fichier
-    f.write(str(x) + " " + str(y) + " " + str(etat) + "\n")
+      x=int(split[0].rstrip('\n'))
+      y=int(split[1].rstrip('\n'))
+      etat=int(split[2].rstrip('\n'))
+      #Effectue le deplacement de chaque agent
+      #Tire un deplacement aleatoire
+      d=random.choice(["n","s","e","o"])
+      #se deplace selon de deplacement aleatoire tire
+      if(d=="n"):
+        y=y+1
+        #Verifie que y ne sors pas de l'environnement
+        if y==h:
+          y=0
+      if(d=="s"):
+        y=y-1
+        if y==-1:
+          y=h-1
+      if(d=="e"):
+        x=x+1
+        if x==w:
+          x=0
+      if(d=="o"):
+        x=x-1
+        if x==-1:
+          x=w-1
+      #Ecrit les nouvelles coordonnees des agents dans le fichier
+      f.write(str(x) + " " + str(y) + " " + str(etat) + "\n")
   f.close()
 			
 def infection():
