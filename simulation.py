@@ -47,6 +47,7 @@ class Simulation:
     #plt.hold(True)
     plt.plot(t,self.M,c="red")
     plt.axis([0, self.pas, 0, (self.S[0]+self.I[0]+self.R[0]+self.M[0])])
-    plt.savefig('statistics',format='png') 
+    plt.title('Stats simulation %i'%self.ID)
+    plt.savefig('statistics%i'%self.ID,format='png') 
     plt.show()
   

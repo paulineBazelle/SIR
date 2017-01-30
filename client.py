@@ -208,7 +208,7 @@ def update():
           if p <= pr: 
             agent.etat = 2 
           else : 
-            if (p>pr and p<=(pm+pr)): 
+            if (p>pr and p<=(pm+pr)):
               agent.etat=3
  
  
@@ -284,6 +284,7 @@ occupe = False
 
 if len(sys.argv) == 9:
 #if len(sys.argv) == 8:
+  print('Initialisation')
   w, h,n, pr, pm, pi = sys.argv[3:]
   initialisation(int(w), int(h), int(n), float(pr), float(pm), float(pi))
   occupe = True
@@ -351,6 +352,14 @@ while stopLoopG:
           else :
             s.send('Pret')
             receptionFichier = True
+        if msg == 'final':
+          print('Toutes les simulations sont terminees. Relancer le programme avec des nouveaux parametres')
+          s.send('end')
+          s.shutdown(1)#liberer l ensemble de la memoire associe socket
+          s.close()
+          stopLoop = False
+          stopLoopG = False
+          sys.exit(0)
           
   #except socket.error, e:
   except IOError, e:
