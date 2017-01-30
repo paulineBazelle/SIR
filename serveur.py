@@ -5,6 +5,7 @@ import sys
 import signal
 from simulation import Simulation
 import errno
+import random
 
 stopBoolServ = True
 
@@ -19,7 +20,6 @@ class Serveur:
   def __init__(self):
     global stopBoolServ
     stopBoolServ = True
-    self.en_cours=False
     # Initialisation de la classe """
     self.TAILLE_BLOC=2048 # la taille des blocs
     self.simulations = [] #tableau d'objets simulations
@@ -41,12 +41,28 @@ class Serveur:
     print "arret de la boucle accept, en attente de connexion ..."
     sock.shutdown(1)
     sock.close()
+  
+  def not_ended(self):
+    pas_fini=False
+    for i in range(len(self.simulations)):
+      if self.simulations[i].end==False:
+        pas_fini=True
+        break
+    return pas_fini
+      
+      
+  def libre(self):
+    pas_en_cours=-1
+    for i in range(len(self.simulations)):
+      if self.simulations[i].en_cours==False and self.simulations[i].end==False:
+        pas_en_cours=i
+        break
+    return pas_en_cours
 	
 
   def lit(self,sockClient):
     # recoit les donnees d'un client et verifie qu il est toujours connecte 
     print "lecture"
-    print("en_cours",self.en_cours)
     again = True
     receptionFichier = False
     sockClient.send('Action')
@@ -55,18 +71,19 @@ class Serveur:
         data = sockClient.recv(self.TAILLE_BLOC)
         #print('recu : %s' %data)
         if receptionFichier:
-          self.en_cours=False
           print "Telechargement fichier: ",data
           print "Longueur", len(data)
           sockClient.send('end')
-          fichier=open("serveur.txt","w")
           data = data.split('\n')
           if data[0] == 'Create':
             data[0] = str(len(self.simulations))
             simul = Simulation(len(self.simulations))
             self.simulations.append(simul)
+            fichier=open("%s.txt"%(data[0]),"w")
           else:
             simul_courante = self.simulations[int(data[0])]
+            simul_courante.en_cours=False
+            fichier=open("%s.txt"%(data[0]),"w")
             etape = data[8]
             if etape == 'Move':
               print('end move')
@@ -86,6 +103,7 @@ class Serveur:
               pas = int(data[7])
               if pas == self.nbPas:
                 simul_courante.statsFinale()
+                simul_courante.end=True
               if pas < self.nbPas:
                 print('end pas %i' %pas)
                 simul_courante.finPas()
@@ -109,17 +127,22 @@ class Serveur:
             receptionFichier = True
             sockClient.send('Pret')
           if data == 'Pret':
-            if not(self.en_cours) :
+            if self.not_ended():
               print("Envoi d'un fichier")
-              f=open("serveur.txt","r")
-              data=f.read()
-              print("data :",data)
-              sockClient.send(data)
-              f.close()
-              sockClient.send('end')
-              self.en_cours=True
-            else :
-              sockClient.send('end')
+              r=self.libre()
+              if r!=-1:
+                f=open("%i.txt"%r,"r")
+                data=f.read()
+                print("data :",data)
+                sockClient.send(data)
+                f.close()
+                sockClient.send('end')
+                self.simulations[r].en_cours=True
+              else :
+                sockClient.send('end')
+            else:
+              print "Fin de toutes les simulations"
+              sockClient.send('final')
           if data == "end":
             print "fin de la connexion demandee par le client"
             again = False
