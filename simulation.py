@@ -24,6 +24,8 @@ class Simulation:
     self.I = []
     self.R = []
     self.M = []
+    self.end = False
+    self.en_cours = False
   
   def finPas(self):
     """Cette methode sera appelee a la fin d'un pas c'est-a-dire
