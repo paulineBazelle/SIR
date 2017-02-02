@@ -281,6 +281,8 @@ port = sys.argv[2]
 global stopLoopG
 stopLoopG = True
 occupe = False
+global termine
+termine=False
 
 if len(sys.argv) == 9:
 #if len(sys.argv) == 8:
@@ -320,7 +322,13 @@ while stopLoopG:
         print ("data :",data)
         if (data== "end"):
           stopLoop = False
-          receptionFichier = False
+          receptionFichier = False 
+        elif (data=="final"):
+          print('Toutes les simulations sont terminees. Relancer le programme avec des nouveaux parametres')
+          stopLoop = False
+          stopLoopG = False
+          termine=True
+          
         else : 
           f=open('donnees.txt','w')
           f.write(data)
@@ -352,14 +360,7 @@ while stopLoopG:
           else :
             s.send('Pret')
             receptionFichier = True
-        if msg == 'final':
-          print('Toutes les simulations sont terminees. Relancer le programme avec des nouveaux parametres')
-          s.send('end')
-          s.shutdown(1)#liberer l ensemble de la memoire associe socket
-          s.close()
-          stopLoop = False
-          stopLoopG = False
-          sys.exit(0)
+
           
   #except socket.error, e:
   except IOError, e:
@@ -378,6 +379,8 @@ while stopLoopG:
     s.send('end')
     s.shutdown(1)#liberer l ensemble de la memoire associe socket
     s.close()
+    if (termine==True) : 
+      sys.exit(0)
   print "fin du client TCP"
 
 
