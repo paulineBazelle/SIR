@@ -270,6 +270,38 @@ def stats():
   f2.writelines(lines[9:])
   f2.close()
 
+def statsFinale(self):
+  f=open("donnees.txt","r")
+  S=[]
+  I=[]
+  R=[]
+  M=[]
+  lines=f.readlines()
+  ID=lines[0]
+  for line in lines[9:]: 
+    line=line.split()
+    S.append(line[0])
+    I.append(line[1])
+    R.append(line[2])
+    M.append(line[3])
+  f.close()
+  pas= len(S)
+  t=np.arange(self.pas)
+  #print ("Sains :", S)
+  plt.plot(t,S,c="green")
+  #plt.hold(True)
+  plt.plot(t,I,c="blue")
+  #plt.hold(True)
+  plt.plot(t,R,c="orange")
+  #plt.hold(True)
+  plt.plot(t,M,c="red")
+  plt.axis([0, pas, 0, (S[0]+I[0]+R[0]+M[0])])
+  plt.title('Stats simulation %i'%ID)
+  plt.savefig('statistics%i'%ID,format='png') 
+  #plt.show()
+  plt.close()
+  
+
 """*************************** Client *****************************"""
 
 
@@ -303,7 +335,7 @@ print 'Press Ctrl+C pour arreter le client'
 #creation de la socket puis connexion
 
 dic_func = {'Initialisation': move, 'Move' : infection,
-'Infect' : update, 'Update': stats, 'Stats': move}
+'Infect' : update, 'Update': stats, 'Stats': move, 'FinalStats': final_stats}
 
 #execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
 while stopLoopG:
