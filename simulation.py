@@ -5,12 +5,17 @@ class Simulation:
   """L'objet simulation garde une trace de l'etape a laquelle on en est.
   """
   
-  def __init__(self,ID):
+  def __init__(self,ID,address):
     """ID est l'identifiant unique de la simulation. Il correspond a
     l'indice du tableau de simulations du serveur. Les booleens
     correspondant aux differentes etapes de simulation valent True
     lorsque l'etape doit etre realisee, False sinon. La variable 'pas'
-    rend compte du pas courant."""
+    rend compte du pas courant. Le dictionnaire dico_etape permet de relier un
+    mot cle a une fonction. Les listes S,I,R,M correspondent nombres d'agents
+    dans chaque etat a chaque pas de temps. End et en_cours donne l'etat d'une 
+    simulation. Si la simulation est termine, end est égal est vrai. Si la simulation
+    est en cours, en_cours est egal est vrai. Address donne l'addresse IP
+    du client qui a requete la simulation """
     self.ID = ID
     self.init = False
     self.move = True
@@ -26,6 +31,7 @@ class Simulation:
     self.M = []
     self.end = False
     self.en_cours = False
+    self.address = address
   
   def finPas(self):
     """Cette methode sera appelee a la fin d'un pas c'est-a-dire
@@ -35,21 +41,7 @@ class Simulation:
     self.infect = False
     self.update = False
   
-  def etape(self, chaine):
+  def etape(self, chaine): 
+    """Cette methode retourne la fonction associe au mot cle chaine"""
     return self.dico_etape[chaine]
-  
-  def statsFinale(self):
-    t=np.arange(self.pas)
-    print ("Sains :", self.S)
-    plt.plot(t,self.S,c="green")
-    #plt.hold(True)
-    plt.plot(t,self.I,c="blue")
-    #plt.hold(True)
-    plt.plot(t,self.R,c="orange")
-    #plt.hold(True)
-    plt.plot(t,self.M,c="red")
-    plt.axis([0, self.pas, 0, (self.S[0]+self.I[0]+self.R[0]+self.M[0])])
-    plt.title('Stats simulation %i'%self.ID)
-    plt.savefig('statistics%i'%self.ID,format='png') 
-    plt.show()
   
