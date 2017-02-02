@@ -11,15 +11,13 @@ import matplotlib.pyplot as plt
 
 # correction exercice client socket protocol TCP/IP
 
-""" #############################################
-################ Methodes SIR ##################
-####################################################"""
+""" *********************** Methodes SIR ***********************"""
   
 def initialisation(w, h,n, pr, pm, pi):
-  #tab=[[0]*h]*w
-  #for i in range(w):
-  # for j in range(h):
-  #   tab[i][j]= []
+  """Creation d'une grille de taille w*h avec n-1 agents sains (etat=0)
+  et 1 angent infecte (etat=1) dont les positions sont tirees aleatoirement.
+  Creation du fichier de donnees avec les parametres de simulation, les
+  positions des agents et leur etat qui sera transmis au serveur."""
   f= open("donnees.txt","w")
   f.write("Create\n")
   f.write(str(w)+ "\n")
@@ -34,15 +32,15 @@ def initialisation(w, h,n, pr, pm, pi):
     x=random.randint(0,w-1)
     y=random.randint(0,h-1)
     f.write(str(x) +" " + str(y) + " 0\n")
-    #tab[x][y].append(Agent(0))
   x=random.randint(0,w-1)
   y=random.randint(0,h-1)
   f.write(str(x) +" " + str(y) + " 1\n")
-  #tab[x][y].append(Agent(1))
   f.close()
   
 
 def move():
+  """Deplacement aleatoire des agents dans la grille. Les nouvelles
+  positions sont enregistrees dans le fichier donnees.txt"""
   f=open("donnees.txt","r")
   #Lit tout le fichier
   l=f.readlines()
@@ -101,6 +99,9 @@ def move():
   f.close()
       
 def infection():
+  """Si plusieurs agents se trouvent a la meme position et qu'un des
+  agents est infecte, les autres agents sont infectes avec un probabilite
+  pi."""
   #Lecture du fichier
   f = open('donnees.txt','r')
   lines = f.readlines()
@@ -135,12 +136,14 @@ def infection():
   for i in range(w):
     for j in range(h):
       if grid[i][j]:
+        #recherche s'il y a un agent infecte a cette position
         infected = False
         for agent in grid[i][j]:
           if agent.etat == 1:
             infected = True
             break
         if infected:
+          #tirage de la probabilite et infection des agents
           p = random.random()
           if p <= pi:
             for agent in grid[i][j]:
@@ -154,7 +157,7 @@ def infection():
     f.write(line)
   #Ecrit la nouvelle etape
   f.write('Infect\n')
-  #Ecrit les nouveaux etats des agents
+  #Ecrit les nouveaux etats des agents et leur position
   for i in range(w):
     for j in range(h):
       if grid[i][j]:
@@ -164,7 +167,9 @@ def infection():
 
 
 #rappel : 0: sain , 1: infecte, 2: resistant, 3 :mort
-def update(): 
+def update():
+  """Tire les probabilites pour le passage de l'etat infecte a resistant
+  ou mort."""
   #Lecture du fichier 
   f = open('donnees.txt','r') 
   lines = f.readlines() 
@@ -181,7 +186,7 @@ def update():
   #recuperation de pm
   pm = float(lines[5].replace('\n', '')) 
  
-#creation de la grille 
+  #creation de la grille 
   grid = np.zeros((w,h)) 
   grid = grid.tolist() 
   for i in range(w): 
@@ -189,7 +194,7 @@ def update():
       grid[i][j]= [] 
  
  
-#ajout des agents a leur position dans la grille 
+  #ajout des agents a leur position dans la grille 
   for l in lines[9:]: 
     line = l.split()
     if len(line) >1: 
@@ -200,7 +205,7 @@ def update():
         grid[x][y].append(agent) 
  
  
-#Resistance ou mort
+  #Resistance ou mort
   for i in range(w): 
     for j in range(h): 
       for agent in grid[i][j]: 
@@ -213,7 +218,7 @@ def update():
               agent.etat=3
  
  
-#Fichier de sortie 
+  #Fichier de sortie 
   f = open('donnees.txt','w') 
   for line in lines[:8]: 
     f.write(line) 
@@ -239,31 +244,28 @@ def count(state,n_s,n_i,n_r,n_m):
   return n_s,n_i,n_r,n_m
     
 def stats():
+  """Compte le nombre d'agents de chaque etat (sain, infecte, resistant,
+  mort. Integre ces resultats dans le fichier donnees.txt"""
+  #Lecture du fichier
   f=open("donnees.txt", "r")
   lines = f.readlines()
-  #n_simulations= sim[11] #utile pour le graphique
   for i in range(8):
     f.readline(9)
   f.close()
   f2=open("donnees.txt","w")
   for line in lines[:8]: 
     f2.write(line)
-  #f2.write('\n')
   f2.write('Stats\n') 
   n_s = 0
   n_i = 0
   n_r = 0
   n_m = 0
-  #~ sains = []
-  #~ infectes = []
-  #~ retires = []
-  #~ morts = []
   for i in lines[9:]:
     if (len(i)>2):
       a=i.split()
       state = a[2]
       n_s,n_i,n_r,n_m = count(state,n_s,n_i,n_r,n_m)
-#output file
+  #output file
   f2.write("sains " + str(n_s) +' \n')
   f2.write("infectes " + str(n_i) +' \n')
   f2.write("retires " + str(n_r) +' \n')
@@ -272,6 +274,9 @@ def stats():
   f2.close()
 
 def statsFinale():
+  """Methode appelee a la fin de la simulation pour tracer l'evolution
+  des populations de chacun des etats au cours du temps."""
+  #Lecture du fichier
   f=open("donnees.txt","r")
   S=[]
   I=[]
@@ -307,35 +312,41 @@ def statsFinale():
 """*************************** Client *****************************"""
 
 
-
+# recuperation de l'adresse du serveur (host) et du port passes en
+# arguments.
 host = sys.argv[1]
 port = sys.argv[2]
 
-
+# booleen qui controle l'arret du programme
 global stopLoopG
 stopLoopG = True
+
+# occupe = True si le client est en train de faire une etape elementaire
+# (move, infect, update, stats). Reste True jusqu'a l'envoie du fichier
+# au serveur.
 occupe = False
+
+# termine = True lorsque la simulation demandee par ce client est terminee.
 global termine
 termine=False
 
+# Recuperation des parametres de simulation
 if len(sys.argv) == 9:
-#if len(sys.argv) == 8:
-  print('Initialisation')
   w, h,n, pr, pm, pi = sys.argv[3:]
   initialisation(int(w), int(h), int(n), float(pr), float(pm), float(pi))
   occupe = True
 
-# exemple de function pour traiter les arrets par ctrl+C
+# Fonction pour traiter les arrets par ctrl+C
 def signal_handler(signal, frame):
   print 'You pressed Ctrl+C!'
-  #global stopLoopG
   stopLoopG = False
   sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
 print 'Press Ctrl+C pour arreter le client'
-#creation de la socket puis connexion
 
+# Dictionnaire permettant d'associer le nom de l'etape lu dans le fichier
+# donnees.txt a la fonction correspondante.
 dic_func = {'Initialisation': move, 'Move' : infection,
 'Infect' : update, 'Update': stats, 'Stats': move, 'FinalStats':statsFinale}
 
@@ -343,17 +354,17 @@ dic_func = {'Initialisation': move, 'Move' : infection,
 while stopLoopG:
   stopLoop = True
   try:
+    #connection au serveur
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((host,int(port)))
-    #s.connect(('',int(port)))
-    print "connectee"
+    print "connecte"
+    # receptionFichier = True si le client s'apprete a recevoir un fichier
     receptionFichier = False
   
     #execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
     while stopLoop:
       if receptionFichier:
         data = s.recv(2048)
-        print ("data :",data)
         if (data== "end"):
           stopLoop = False
           receptionFichier = False 
@@ -364,35 +375,33 @@ while stopLoopG:
           termine=True
           
         else : 
-          f=open('donnees.txt','w')
+          f=open('donnees.txt','w') #recuperation des donnees
           f.write(data)
           f.close()
-          s.send('end')
+          s.send('end') #deconnection du serveur
           occupe = True
           data = data.split('\n')
-          print (len(data))
           func = dic_func[data[8]]
-          func()
+          func() #execution de la fonction elementaire
           receptionFichier = False 
       else:
         msg = s.recv(2048)
-        print ("msg3: ",msg)
-        if msg == "end":
+        if msg == "end": #deconnection demandee par le serveur
           stopLoop = False
-        if msg =='Envoi':
+        if msg =='Envoi': #demande d'envoi d'un fichier depuis le serveur
           s.send("Pret")
           receptionFichier = True
-        if msg == 'Pret':
+        if msg == 'Pret': #envoi des donnees au serveur
           f=open("donnees.txt","r")
           data=f.read() 
           s.send(data)
           f.close()
         if msg == 'Action':
-          if occupe:
+          if occupe: #demande d'envoi des donnees au serveur
             s.send('Envoi')
             occupe = False
           else :
-            s.send('Pret')
+            s.send('Pret') # preparation a la reception des donnees
             receptionFichier = True
         if msg == 'final' :
           print('Toutes les simulations sont terminees. Relancer le programme avec des nouveaux parametres')
@@ -409,7 +418,6 @@ while stopLoopG:
     elif e.errno == errno.ECONNRESET:
       print ("possible perte de donnees")
     else :
-      print ("En attente, serveur deja connecte...%s"%e)
       raise
       
   finally:
@@ -418,7 +426,8 @@ while stopLoopG:
     s.send('end')
     s.shutdown(1)#liberer l ensemble de la memoire associe socket
     s.close()
-    if (termine==True) : 
+    if (termine==True) :
+      # si la simulation demandee est terminee, fin du programme.
       sys.exit(0)
   print "fin du client TCP"
 
