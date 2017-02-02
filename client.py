@@ -7,6 +7,7 @@ from agent import Agent
 import random
 import numpy as np
 import errno
+import matplotlib.pyplot as plt
 
 # correction exercice client socket protocol TCP/IP
 
@@ -270,23 +271,24 @@ def stats():
   f2.writelines(lines[9:])
   f2.close()
 
-def statsFinale(self):
+def statsFinale():
   f=open("donnees.txt","r")
   S=[]
   I=[]
   R=[]
   M=[]
   lines=f.readlines()
-  ID=lines[0]
+  ID=int(lines[0])
   for line in lines[9:]: 
-    line=line.split()
-    S.append(line[0])
-    I.append(line[1])
-    R.append(line[2])
-    M.append(line[3])
+    if len(line)>1:
+      line=line.split()
+      S.append(int(line[0]))
+      I.append(int(line[1]))
+      R.append(int(line[2]))
+      M.append(int(line[3]))
   f.close()
   pas= len(S)
-  t=np.arange(self.pas)
+  t=np.arange(pas)
   #print ("Sains :", S)
   plt.plot(t,S,c="green")
   #plt.hold(True)
@@ -335,7 +337,7 @@ print 'Press Ctrl+C pour arreter le client'
 #creation de la socket puis connexion
 
 dic_func = {'Initialisation': move, 'Move' : infection,
-'Infect' : update, 'Update': stats, 'Stats': move, 'FinalStats': final_stats}
+'Infect' : update, 'Update': stats, 'Stats': move, 'FinalStats':statsFinale}
 
 #execute cette boucle tant qu'il n'a pas recu 'end' du serveur.
 while stopLoopG:
@@ -392,6 +394,11 @@ while stopLoopG:
           else :
             s.send('Pret')
             receptionFichier = True
+        if msg == 'final' :
+          print('Toutes les simulations sont terminees. Relancer le programme avec des nouveaux parametres')
+          stopLoop = False
+          stopLoopG = False
+          termine=True
 
           
   #except socket.error, e:
